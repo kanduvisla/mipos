@@ -40,6 +40,8 @@ int main(int argc, char **argv)
 
 	play_state state = play_state_stopped;
 	uint8_t ticks = 0;
+	uint8_t status;
+	snd_rawmidi_status_t *st;
 
 	while (keep_running) {
 		// check if midi device is available
@@ -50,18 +52,24 @@ int main(int argc, char **argv)
 
 			if(!snd_rawmidi_open(&midiin, NULL, portname, SND_RAWMIDI_SYNC) && !snd_rawmidi_read(midiin, NULL, 0)) {
 				is_midi_connected = 1;
+				snd_rawmidi_status_alloca(&st);
 			}
 
 			bcm2835_gpio_write(LED_POWER, HIGH);
 			bcm2835_delay(500);
 		}
 
-		// MIDI Device is detected
-		uint8_t status;
-		snd_rawmidi_read(midiin, &status, 1);
+		// Detect if midi device is disconnected:
+		if (snd_rawmidi_status(midiin, st) != 0) {
+			is_midi_connected = 0;
+		}
 
-		if(status & 0xF0)
-		{
+		if (is_midi_connected) {
+			// MIDI Device is detected
+			snd_rawmidi_read(midiin, &status, 1);
+		}
+
+		if(is_midi_connected && (status & 0xF0)) {
 			switch(status)
 			{
 				case 0xFA: // start
