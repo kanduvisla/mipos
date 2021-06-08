@@ -2,6 +2,8 @@
 
 Midi Clock to sync with Pocket Operators and some LED status, heavily inspired (and partly borrowed) by [mirg](https://github.com/jpenca/mirg).
 
+[![example video](https://img.youtube.com/vi/h7uUBwMZBDk/0.jpg)](https://www.youtube.com/watch?v=h7uUBwMZBDk)
+
 ## What is it?
 
 This is a simple program for the Raspberry Pi. It listens to MIDI clock/start/stop on a USB port, provides korg-style pulse sync on GPIO. For example, this lets you sync Korg Volca, Teenage Engineering Teeange Engineering OP-XX or Pocket Operators to any device which provides clock via USB, such as Elektron Analog series, Model Series or Teenage Engineering OP-1.
