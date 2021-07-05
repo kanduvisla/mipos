@@ -5,7 +5,8 @@
 #include <alsa/asoundlib.h>
 
 #define LED_POWER RPI_GPIO_P1_11	// Power LED
-#define LED_CLOCK RPI_GPIO_P1_12	// Midi Clock Indicator LED
+#define LED_CLOCK1 RPI_GPIO_P1_12	// Midi Clock Indicator LED
+#define LED_CLOCK2 RPI_GPIO_P1_13	// 2nd Midi Clock Indicator LED
 #define CLOCK_DIV 12			// 12 clock ticks per 8th note
 #define PULSE_LEN 15			// 15 ms pulse
 
@@ -36,7 +37,8 @@ int main(int argc, char **argv)
 	// Initialize BCM2835:
 	bcm2835_init();
 	bcm2835_gpio_fsel(LED_POWER, BCM2835_GPIO_FSEL_OUTP);
-	bcm2835_gpio_fsel(LED_CLOCK, BCM2835_GPIO_FSEL_OUTP);
+	bcm2835_gpio_fsel(LED_CLOCK1, BCM2835_GPIO_FSEL_OUTP);
+	bcm2835_gpio_fsel(LED_CLOCK2, BCM2835_GPIO_FSEL_OUTP);
 
 	play_state state = play_state_stopped;
 	uint8_t ticks = 0;
@@ -95,9 +97,11 @@ int main(int argc, char **argv)
 						ticks = 0; // reset clock
 						if(state == play_state_playing)
 						{
-							bcm2835_gpio_write(LED_CLOCK, HIGH);
+							bcm2835_gpio_write(LED_CLOCK1, HIGH);
+							bcm2835_gpio_write(LED_CLOCK2, HIGH);
 							bcm2835_delay(PULSE_LEN);
-							bcm2835_gpio_write(LED_CLOCK, LOW);
+							bcm2835_gpio_write(LED_CLOCK1, LOW);
+							bcm2835_gpio_write(LED_CLOCK2, HIGH);
 						}
 					}
 
@@ -113,7 +117,8 @@ int main(int argc, char **argv)
 
 	// Make sure LED's are turned off
 	bcm2835_gpio_write(LED_POWER, LOW);
-	bcm2835_gpio_write(LED_CLOCK, LOW);
+	bcm2835_gpio_write(LED_CLOCK1, LOW);
+	bcm2835_gpio_write(LED_CLOCK2, LOW);
 
 	return 0;
 }
